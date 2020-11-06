@@ -1,3 +1,10 @@
+# PS5 Files
+*.PUP
+*.PKG
+
+# Pycharme directories
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
