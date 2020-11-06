@@ -1,9 +1,10 @@
+import os
 from construct import *
 
 
 class SLB2:
 
-    def __init__(self, file):
+    def __init__(self, file: str):
         self.file = file
         self.block_size = 512
 
@@ -35,11 +36,13 @@ class SLB2:
     def info_raw(self):
         print("PS5 SLB2 iNFO")
         print("#############")
+        print("Filename: " + os.path.basename(self.file))
         print(self.slb2)
 
     def info(self):
         print("PS5 SLB2 iNFO")
         print("#############")
+        print("Filename: " + os.path.basename(self.file))
         print("Version: " + str(self.slb2.version))
         print("File Count: " + str(self.slb2.file_count))
         print("Contains:")

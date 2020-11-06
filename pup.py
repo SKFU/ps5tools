@@ -1,9 +1,10 @@
+import os
 from construct import *
 
 
 class PUP:
 
-    def __init__(self, file):
+    def __init__(self, file: str):
         self.file = file
 
         pup_header = Struct(
@@ -15,9 +16,11 @@ class PUP:
     def info_raw(self):
         print("PS5 PUP iNFO")
         print("#############")
+        print("Filename: " + os.path.basename(self.file))
         print(self.pup)
 
     def info(self):
         print("PS5 PUP iNFO")
         print("############")
+        print("Filename: " + os.path.basename(self.file))
         print("Header not analyzed, yet...")

@@ -3,18 +3,19 @@
 __author__ = "SKFU"
 __copyright__ = "Copyright 2020, "+__author__
 __credits__ = "tuxuser"
-__version__ = "05112020"
+__version__ = "06112020"
 
 
 import argparse
 from slb2 import *
-from pkg import *
+from fih import *
 from pup import *
+from cnt import *
 
 
 def check_signature(file: str) -> str:
 
-    known_signatures = {"7f464948": "fih", "534c4232": "slb2", "5414f5ee": "pup"}
+    known_signatures = {"7f464948": "fih", "534c4232": "slb2", "5414f5ee": "pup", "7f434e54": "cnt"}
 
     with open(file, "rb") as f:
         signature = str(f.read(4).hex())
@@ -25,21 +26,13 @@ def check_signature(file: str) -> str:
 def main(file: str, verbose: bool, extract: bool):
     file_type = check_signature(file)
     if file_type == "slb2":
-        slb2 = SLB2(args.file)
+        slb2 = SLB2(file)
         if verbose:
             slb2.info_raw()
         else:
             slb2.info()
         if extract:
             slb2.extract()
-    elif file_type == "fih":
-        pkg = PKG(file)
-        if verbose:
-            pkg.info_raw()
-        else:
-            pkg.info()
-        if extract:
-            pkg.extract()
     elif file_type == "pup":
         pup = PUP(file)
         if verbose:
@@ -48,6 +41,22 @@ def main(file: str, verbose: bool, extract: bool):
             pup.info()
         if extract:
             print("Extraction not available, yet...")
+    elif file_type == "fih":
+        fih = FIH(file)
+        if verbose:
+            fih.info_raw()
+        else:
+            fih.info()
+        if extract:
+            fih.extract()
+    elif file_type == "cnt":
+        cnt = CNT(file)
+        if verbose:
+            cnt.info_raw()
+        else:
+            cnt.info()
+        if extract:
+            cnt.extract()
     else:
         print("Unknown file")
 
