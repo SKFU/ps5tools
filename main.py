@@ -26,39 +26,22 @@ def check_signature(file: str) -> str:
 def main(file: str, verbose: bool, extract: bool):
     file_type = check_signature(file)
     if file_type == "slb2":
-        slb2 = SLB2(file)
-        if verbose:
-            slb2.info_raw()
-        else:
-            slb2.info()
-        if extract:
-            slb2.extract()
+        instance = SLB2(file)
     elif file_type == "pup":
-        pup = PUP(file)
-        if verbose:
-            pup.info_raw()
-        else:
-            pup.info()
-        if extract:
-            print("Extraction not available, yet...")
+        instance = PUP(file)
     elif file_type == "fih":
-        fih = FIH(file)
-        if verbose:
-            fih.info_raw()
-        else:
-            fih.info()
-        if extract:
-            fih.extract()
+        instance = FIH(file)
     elif file_type == "cnt":
-        cnt = CNT(file)
-        if verbose:
-            cnt.info_raw()
-        else:
-            cnt.info()
-        if extract:
-            cnt.extract()
+        instance = CNT(file)
     else:
-        print("Unknown file")
+        return "unknown file type"
+
+    if verbose:
+        instance.info_raw()
+    else:
+        instance.info()
+    if extract and file_type != "pup":
+        instance.extract()
 
 
 if __name__ == '__main__':

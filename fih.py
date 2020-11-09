@@ -12,12 +12,17 @@ class FIH:
             "version" / Int32ul,
             "unknown" / Int32ul,
             Padding(4),
+
             "fih_offset" / Int32ul,
             Padding(4),
             "data_size_encrypted" / Int64ul,
             "data_size_decrypted" / Int64ul,
+
             "unknown" / Int32ul,
-            Padding(4),
+            "unknown" / Int32ul,
+            "unknown" / Int32ul,
+            "unknown" / Int32ul,
+
             Padding(64),
             "fih_data" / Pointer(this.fih_offset, Bytes(this.data_size_encrypted)),
         )

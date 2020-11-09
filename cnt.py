@@ -3,12 +3,12 @@ from construct import *
 
 
 class CNT:
-
     known_signatures = {"89504e47": "png", "44445320": "dds", "7b0d0a20": "json", "706c6778": "plgx", "7f524c43": "rlc",
-                        "52494646": "riff"}
+                        "52494646": "riff", "d2560102": "ov", "00000001": "toc"}
 
     def __init__(self, file: str):
         self.file = file
+        self.file_names = []
 
         data = Struct(
             "signature" / Pointer(lambda this: this._.data_entries[this._index].data_offset, Bytes(4)),
@@ -17,10 +17,24 @@ class CNT:
         )
 
         data_entry = Struct(
-            "some_counter" / Int32ub,
-            Padding(4),
+            Padding(2),
+            "type" / Enum(Int8ub,
+                          UNKNOWN1=0x00,
+                          UNKNOWN2=0x01,
+                          FILENAMES=0x02,
+                          FILE1=0x04,
+                          FILE2=0x10,
+                          FILE3=0x12,
+                          FILE4=0x14,
+                          FILE5=0x20,
+                          FILE6=0x21,
+                          FILE7=0x30,
+                          ),
+            Padding(1),
             "unknown" / Int32ub,
-            Padding(4),
+            "unknown" / Int32ub,
+            "unknown" / Int32ub,
+
             "data_offset" / Int32ub,
             "data_size" / Int32ub,
             Padding(8),
@@ -31,6 +45,7 @@ class CNT:
             Padding(4),
             "unknown" / Int32ub,
             Padding(4),
+
             "eof_offset" / Int32ub,
             "toc_size" / Int32ub,
             Padding(8),
@@ -62,8 +77,8 @@ class CNT:
             Padding(144),
             Seek(this.toc_offset),  # jump to toc
             "toc_header" / toc_header,
-            "data_entries" / Array(this.file_count-1, data_entry),
-            "data" / Array(this.file_count-1, data),
+            "data_entries" / Array(this.file_count - 1, data_entry),
+            "data" / Array(this.file_count - 1, data),
         )
 
         self.cnt = cnt_header.parse_file(file)
@@ -80,23 +95,50 @@ class CNT:
         print("Filename: " + os.path.basename(self.file))
         print("File Count: " + str(self.cnt.file_count))
         print("Title ID: " + str(self.cnt.title_id))
+        self._get_filenames()
 
-    def _get_extension(self, signature):
-        print(signature)
+    def _get_extension_by_signature(self, signature):
         ext = self.known_signatures.get(signature)
         if ext:
             return ext
         else:
             return "unknown"
 
+    def _get_filenames(self) -> bool:
+        for i in range(self.cnt.file_count - 1):
+            if self.cnt.data_entries[i].type == "FILENAMES":
+                file_names = "".join( chr(x) for x in self.cnt.data[i].data)
+                self.file_names = file_names.replace("\x00", " ").split()
+                return True
+
+    def _create_working_dir(self) -> str:
+        try:
+            os.mkdir("./"+str(self.cnt.title_id)+"_extracted/")
+        except OSError:
+            return ""
+        else:
+            return "./"+str(self.cnt.title_id)+"_extracted/"
+
     def extract(self):
         print("\n")
         print("PS5 CNT EXTRACTiON")
         print("##################")
-        j = 1
-        for i in range(self.cnt.file_count-1):
-            ext = self._get_extension(self.cnt.data[i].signature.hex())
-            with open(str(j)+"."+ext, "w+b") as f:
+        j = 0
+        counter = 0
+        filenames_available = self._get_filenames()
+        filename_counter = len(self.file_names)
+
+        working_dir = self._create_working_dir()
+
+        for i in range(self.cnt.file_count - 1):
+            if j >= self.cnt.file_count-filename_counter-1 and filenames_available:
+                filename = self.file_names[counter]
+                counter += 1
+            else:
+                filename = str(j) + "." + self._get_extension_by_signature(self.cnt.data[i].signature.hex())
+
+            with open(working_dir+filename, "w+b") as f:
                 f.write(self.cnt.data[i].data)
-            j = j+1
-        print(str(self.cnt.file_count-1)+" files extracted...")
+            j += 1
+
+        print(str(self.cnt.file_count - 1) + " files extracted...")

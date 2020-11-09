@@ -52,12 +52,23 @@ class SLB2:
             print("Offset: "+str(hex(self.slb2.pup_entries[i].pup_offset * self.block_size)))
             print("Bytes: "+str(self.slb2.pup_entries[i].pup_total_bytes))
 
+    def _create_working_dir(self) -> str:
+        try:
+            os.mkdir("./"+str(os.path.basename(self.file))+"_extracted/")
+        except OSError:
+            return ""
+        else:
+            return "./"+str(os.path.basename(self.file))+"_extracted/"
+
     def extract(self):
         print("\n")
         print("PS5 SLB2 EXTRACTiON")
         print("###################")
+
+        working_dir = self._create_working_dir()
+
         for i in range(self.slb2.file_count):
-            with open(self.slb2.pup_entries[i].pup_name, "w+b") as f:
+            with open(working_dir+self.slb2.pup_entries[i].pup_name, "w+b") as f:
                 f.write(self.slb2.pup_files[i].pup_data)
         print(str(self.slb2.file_count)+" PUP files extracted...")
 
