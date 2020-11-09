@@ -137,6 +137,7 @@ class CNT:
             else:
                 filename = str(j) + "." + self._get_extension_by_signature(self.cnt.data[i].signature.hex())
 
+            os.makedirs(working_dir+os.path.dirname(filename), exist_ok=True)
             with open(working_dir+filename, "w+b") as f:
                 f.write(self.cnt.data[i].data)
             j += 1
