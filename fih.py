@@ -1,5 +1,6 @@
 import os
 from construct import *
+from utils import _create_working_dir
 
 
 class FIH:
@@ -16,14 +17,10 @@ class FIH:
             "fih_offset" / Int32ul,
             Padding(4),
             "data_size_encrypted" / Int64ul,
+
             "data_size_decrypted" / Int64ul,
-
-            "unknown" / Int32ul,
-            "unknown" / Int32ul,
-            "unknown" / Int32ul,
-            "unknown" / Int32ul,
-
-            Padding(64),
+            "fih_offset_backup" / Int32ul,
+            Padding(4),
 
             "fih_data" / Pointer(this.fih_offset, Bytes(this.data_size_encrypted)),
         )
@@ -44,20 +41,12 @@ class FIH:
         print("Data Size Encrypted: " + str(self.fih.data_size_encrypted))
         print("Data Size Decrypted: " + str(self.fih.data_size_decrypted))
 
-    def _create_working_dir(self) -> str:
-        try:
-            os.mkdir("./"+str(os.path.basename(self.file))+"_extracted/")
-        except OSError:
-            return ""
-        else:
-            return "./"+str(os.path.basename(self.file))+"_extracted/"
-
     def extract(self):
         print("\n")
         print("PS5 FIH EXTRACTiON")
         print("###################")
 
-        working_dir = self._create_working_dir()
+        working_dir = _create_working_dir(str(os.path.basename(self.file)))
 
         with open(working_dir+self.file + ".data", "w+b") as f:
             f.write(self.fih.fih_data)

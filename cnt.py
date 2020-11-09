@@ -1,11 +1,9 @@
 import os
 from construct import *
+from utils import _create_working_dir, _get_extension_by_signature
 
 
 class CNT:
-    known_signatures = {"89504e47": "png", "44445320": "dds", "7b0d0a20": "json", "706c6778": "plgx", "7f524c43": "rlc",
-                        "52494646": "riff", "d2560102": "ov", "00000001": "toc"}
-
     def __init__(self, file: str):
         self.file = file
         self.file_names = []
@@ -19,10 +17,10 @@ class CNT:
         data_entry = Struct(
             Padding(2),
             "type" / Enum(Int8ub,
-                          UNKNOWN1=0x00,
-                          UNKNOWN2=0x01,
+                          UNKNOWN=0x00,
+                          TOC=0x01,
                           FILENAMES=0x02,
-                          FILE1=0x04,
+                          NOT_TO_BE_EXTRACTED=0x04,
                           FILE2=0x10,
                           FILE3=0x12,
                           FILE4=0x14,
@@ -31,7 +29,7 @@ class CNT:
                           FILE7=0x30,
                           ),
             Padding(1),
-            "unknown" / Int32ub,
+            "filename_offset" / Int32ub,
             "unknown" / Int32ub,
             "unknown" / Int32ub,
 
@@ -99,27 +97,12 @@ class CNT:
         self._get_filenames()
         print(self.file_names)
 
-    def _get_extension_by_signature(self, signature) -> str:
-        ext = self.known_signatures.get(signature)
-        if ext:
-            return ext
-        else:
-            return "unknown"
-
     def _get_filenames(self) -> bool:
         for i in range(self.cnt.file_count - 1):
             if self.cnt.data_entries[i].type == "FILENAMES":
                 file_names = "".join( chr(x) for x in self.cnt.data[i].data)
                 self.file_names = file_names.replace("\x00", " ").split()
                 return True
-
-    def _create_working_dir(self) -> str:
-        try:
-            os.mkdir("./"+str(os.path.basename(self.file))+"_extracted/")
-        except OSError:
-            return ""
-        else:
-            return "./"+str(os.path.basename(self.file))+"_extracted/"
 
     def extract(self):
         print("\n")
@@ -130,14 +113,14 @@ class CNT:
         filenames_available = self._get_filenames()
         filename_counter = len(self.file_names)
 
-        working_dir = self._create_working_dir()
+        working_dir = _create_working_dir(str(os.path.basename(self.file)))
 
         for i in range(self.cnt.file_count - 1):
             if j >= self.cnt.file_count-filename_counter-1 and filenames_available:
                 filename = self.file_names[counter]
                 counter += 1
             else:
-                filename = str(j) + "." + self._get_extension_by_signature(self.cnt.data[i].signature.hex())
+                filename = str(j) + "." + _get_extension_by_signature(self.cnt.data[i].signature.hex())
 
             os.makedirs(working_dir+os.path.dirname(filename), exist_ok=True)
             with open(working_dir+filename, "w+b") as f:

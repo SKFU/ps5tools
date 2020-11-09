@@ -1,5 +1,6 @@
 import os
 from construct import *
+from utils import _create_working_dir
 
 
 class PUP:
@@ -9,6 +10,9 @@ class PUP:
 
         pup_header = Struct(
             "signature" / Const(b"\x54\x14\xf5\xee"),
+            "unknown" / Int32ub,
+            "unknown" / Int32ub,
+            "unknown" / Int32ub,
         )
 
         self.pup = pup_header.parse_file(file)
