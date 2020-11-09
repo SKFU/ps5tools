@@ -95,9 +95,11 @@ class CNT:
         print("Filename: " + os.path.basename(self.file))
         print("File Count: " + str(self.cnt.file_count))
         print("Title ID: " + str(self.cnt.title_id))
+        print("Contains: ")
         self._get_filenames()
+        print(self.file_names)
 
-    def _get_extension_by_signature(self, signature):
+    def _get_extension_by_signature(self, signature) -> str:
         ext = self.known_signatures.get(signature)
         if ext:
             return ext
@@ -113,11 +115,11 @@ class CNT:
 
     def _create_working_dir(self) -> str:
         try:
-            os.mkdir("./"+str(self.cnt.title_id)+"_extracted/")
+            os.mkdir("./"+str(os.path.basename(self.file))+"_extracted/")
         except OSError:
             return ""
         else:
-            return "./"+str(self.cnt.title_id)+"_extracted/"
+            return "./"+str(os.path.basename(self.file))+"_extracted/"
 
     def extract(self):
         print("\n")
@@ -140,6 +142,7 @@ class CNT:
             os.makedirs(working_dir+os.path.dirname(filename), exist_ok=True)
             with open(working_dir+filename, "w+b") as f:
                 f.write(self.cnt.data[i].data)
+                print("EXTRACTED #"+str(i)+": "+filename+" ("+str(self.cnt.data_entries[i].data_size) + " Bytes)")
             j += 1
 
         print(str(self.cnt.file_count - 1) + " files extracted...")

@@ -70,5 +70,8 @@ class SLB2:
         for i in range(self.slb2.file_count):
             with open(working_dir+self.slb2.pup_entries[i].pup_name, "w+b") as f:
                 f.write(self.slb2.pup_files[i].pup_data)
-        print(str(self.slb2.file_count)+" PUP files extracted...")
+                print("EXTRACTED #" + str(i) + ": " + self.slb2.pup_entries[i].pup_name + " (" +
+                      str(self.slb2.pup_entries[i].pup_total_bytes) + " Bytes)")
+
+        print(str(self.slb2.file_count)+" files extracted...")
 

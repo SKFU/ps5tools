@@ -24,6 +24,7 @@ class FIH:
             "unknown" / Int32ul,
 
             Padding(64),
+
             "fih_data" / Pointer(this.fih_offset, Bytes(this.data_size_encrypted)),
         )
 
@@ -43,11 +44,24 @@ class FIH:
         print("Data Size Encrypted: " + str(self.fih.data_size_encrypted))
         print("Data Size Decrypted: " + str(self.fih.data_size_decrypted))
 
+    def _create_working_dir(self) -> str:
+        try:
+            os.mkdir("./"+str(os.path.basename(self.file))+"_extracted/")
+        except OSError:
+            return ""
+        else:
+            return "./"+str(os.path.basename(self.file))+"_extracted/"
+
     def extract(self):
         print("\n")
         print("PS5 FIH EXTRACTiON")
         print("###################")
-        with open(self.file + ".data", "w+b") as f:
+
+        working_dir = self._create_working_dir()
+
+        with open(working_dir+self.file + ".data", "w+b") as f:
             f.write(self.fih.fih_data)
-        print("fih data extracted...")
+            print("EXTRACTED #1: " + self.file + ".data (" + str(self.fih.data_size_encrypted) + " Bytes)")
+
+        print("files extracted...")
 
