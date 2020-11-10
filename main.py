@@ -41,7 +41,7 @@ def main(file: str, verbose: bool, extract: bool):
         instance.info()
     
     # Extract
-    if extract :
+    if extract:
         instance.extract()
 
 
