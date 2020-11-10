@@ -36,7 +36,7 @@ class PUP:
         print('Header not analyzed, yet...')
     
     def extract(self):
-    
+        
         print('')
         print('PS5 PUP EXTRACTiON')
         print('###################')
