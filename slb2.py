@@ -13,7 +13,8 @@ class SLB2:
         
         pup_file = Struct(
             'pup_data'        / Pointer(lambda this: this._.pup_entries[this._index].pup_offset * self.block_size,
-                                Bytes(lambda this: this._.pup_entries[this._index].pup_total_bytes)),
+                                        Bytes(lambda this: this._.pup_entries[this._index].pup_total_bytes)
+                                       ),
         )
         
         pup_entry = Struct(
@@ -40,6 +41,7 @@ class SLB2:
         
         print('PS5 SLB2 iNFO')
         print('#############')
+        
         print('Filename: '       + os.path.basename(self.file))
         print(self.slb2)
     
@@ -47,9 +49,11 @@ class SLB2:
         
         print('PS5 SLB2 iNFO')
         print('#############')
+        
         print('Filename: '       + os.path.basename(self.file))
         print('Version:    0x%X' % self.slb2.version)
         print('File Count: 0x%X' % self.slb2.file_count)
+        
         print('Contains:')
         for i in range(self.slb2.file_count):
             print('')
@@ -66,7 +70,9 @@ class SLB2:
         working_dir = _create_working_dir(os.path.basename(self.file))
         
         for i in range(self.slb2.file_count):
+            
             with open(working_dir + self.slb2.pup_entries[i].pup_name, 'wb') as f:
+                
                 f.write(self.slb2.pup_files[i].pup_data)
                 print('EXTRACTED #%i: %s (0x%X Bytes)' % (
                             i, 

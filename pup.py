@@ -23,6 +23,7 @@ class PUP:
         
         print('PS5 PUP iNFO - Verbose')
         print('#############')
+        
         print('Filename: ' + os.path.basename(self.file))
         print(self.pup)
     
@@ -30,6 +31,14 @@ class PUP:
         
         print('PS5 PUP iNFO')
         print('############')
+        
         print('Filename: ' + os.path.basename(self.file))
         print('Header not analyzed, yet...')
+    
+    def extract(self):
+    
+        print('')
+        print('PS5 PUP EXTRACTiON')
+        print('###################')
+        print('SOON (TM)')
     

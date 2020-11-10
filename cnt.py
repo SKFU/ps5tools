@@ -117,16 +117,16 @@ class CNT:
         counter = 0
         filenames_available = self._get_filenames()
         filename_counter    = len(self.file_names)
-
+        
         working_dir = _create_working_dir(str(os.path.basename(self.file)))
-
+        
         for i in range(self.cnt.file_count - 1):
             if j >= self.cnt.file_count - filename_counter - 1 and filenames_available:
                 filename = self.file_names[counter]
                 counter += 1
             else:
                 filename = ('%i.' % j) + _get_extension_by_signature(self.cnt.data[i].signature.hex())
-
+            
             os.makedirs(working_dir + os.path.dirname(filename), exist_ok=True)
             
             with open(working_dir + '/' + filename, 'wb') as f:
@@ -138,7 +138,6 @@ class CNT:
                                                          )
                      )
             j += 1
-
+        
         print('%i files extracted...' % (self.cnt.file_count - 1))
     
-

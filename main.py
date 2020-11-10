@@ -41,9 +41,7 @@ def main(file: str, verbose: bool, extract: bool):
         instance.info()
     
     # Extract
-    if extract and 'pup' in file:
-        print('ERROR: Unable to extract')
-    elif extract:
+    if extract :
         instance.extract()
 
 

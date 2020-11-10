@@ -32,7 +32,7 @@ class FIH:
         print('#############')
         
         print(self.fih)
-        
+    
     def info(self):
         
         print('PS5 FIH iNFO')
@@ -43,7 +43,7 @@ class FIH:
         print('Data Offset:         0x%X' % self.fih.fih_offset)
         print('Data Size Encrypted: 0x%X' % self.fih.data_size_encrypted)
         print('Data Size Decrypted: 0x%X' % self.fih.data_size_decrypted)
-        
+    
     def extract(self):
         
         print('')
@@ -54,7 +54,7 @@ class FIH:
         
         with open(working_dir + '/' + self.file + '.data', 'wb') as f:
             f.write(self.fih.fih_data)
-            print('EXTRACTED #1: ' + self.file + '.data (' + str(self.fih.data_size_encrypted) + ' Bytes)')
+            print('EXTRACTED #1: %s.data (0x%X Bytes)' % (self.file, self.fih.data_size_encrypted))
         
         print('files extracted...')
-
+    
