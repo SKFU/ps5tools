@@ -70,6 +70,7 @@ class CNT:
             'unknown'               / Int32ub,
             'unknown'               / Int32ub,
             'title_id'              / PaddedString(40, 'utf-8'),
+
             Padding(144),
             Seek(this.toc_offset),  # jump to toc
             'toc_header'            / toc_header,
@@ -88,14 +89,14 @@ class CNT:
         print(self.cnt)
     
     def info(self):
-        
-        print('PS5 CNT iNFO')
-        print('############')
-        
-        print('Filename: ' + os.path.basename(self.file))
-        print('File Count: ' + str(self.cnt.file_count))
-        print('Title ID: ' + str(self.cnt.title_id))
-        print('Contains: ')
+
+        print("PS5 CNT iNFO")
+        print("############")
+        print("Filename: " + os.path.basename(self.file))
+        print("File Count: " + str(self.cnt.file_count))
+        print("Data Size: " + str(self.cnt.data_size))
+        print("Title ID: " + str(self.cnt.title_id))
+        print("Contains: ")
         self._get_filenames()
         print(self.file_names)
     
