@@ -95,7 +95,7 @@ class CNT:
         print('Filename:   '     + os.path.basename(self.file))
         print('File Count:   %i' % self.cnt.file_count)
         print('Data Size:  0x%X' % self.cnt.data_size)
-        print('Title ID:   '     + self.cnt.title_id))
+        print('Title ID:   '     + self.cnt.title_id)
         print('Contains:')
         self._get_filenames()
         print(self.file_names)
