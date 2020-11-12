@@ -40,7 +40,7 @@ class FIH:
             'unk2_data'       / Pointer(this.pfs_offset + this.pfs_size, Bytes(this.sc_offset - (this.pfs_offset + this.pfs_size))),
         )
         
-        self.fih = fih_header.parse(file.read())
+        self.fih = fih_header.parse(file)
     
     def info_raw(self):
         

@@ -21,7 +21,7 @@ class PUP:
     
     def info_raw(self):
         
-        print('PS5 PUP iNFO - Verbose')
+        print('PS5 PUP iNFO')
         print('#############')
         
         print('Filename: ' + os.path.basename(self.file))

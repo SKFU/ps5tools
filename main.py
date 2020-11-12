@@ -4,7 +4,7 @@ import argparse
 __author__    = 'SKFU'
 __copyright__ = 'Copyright 2020, '+__author__
 __credits__   = 'tuxuser, SocraticBliss'
-__version__   = '10112020'
+__version__   = '11112020'
 
 from pup import *
 from slb2 import *
@@ -17,15 +17,16 @@ def load_file(filename):
     with open(filename, 'rb') as f:
         magic = known_signatures.get(f.read(4).hex().upper())
         f.seek(0)
+        file = f.read()
         
         if magic == 'pup':
-            return PUP(f, filename) 
+            return PUP(file, filename) 
         elif magic == 'slb2':
-            return SLB2(f, filename)
+            return SLB2(file, filename)
         elif magic == 'fih':
-            return FIH(f, filename)
+            return FIH(file, filename)
         elif magic == 'cnt':
-            return CNT(f, filename)
+            return CNT(file, filename)
         else:
             raise SystemExit('ERROR: Filetype not currently supported!')
 
