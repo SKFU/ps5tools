@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import os
 from construct import *
-
 from utils import _create_working_dir
+
 
 class SLB2:
     
@@ -88,8 +88,7 @@ class SLB2:
                             i, 
                             self.slb2.pup_entries[i].pup_name, 
                             self.slb2.pup_entries[i].pup_data_size
-                        )
-                     )
+                            )
+                      )
         
         print('%i files extracted...' % self.slb2.file_count)
-    

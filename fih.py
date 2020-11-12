@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import os
 from construct import *
-
 from utils import _create_working_dir
+
 
 class FIH:
     
@@ -37,7 +37,8 @@ class FIH:
             'unk_data'        / Pointer(0xF000, Bytes(0x1000)),
             'fih_data'        / Pointer(this.fih_offset, Bytes(this.pfs_offset - this.fih_offset)),
             'pfs_data'        / Pointer(this.pfs_offset, Bytes(this.pfs_size)),
-            'unk2_data'       / Pointer(this.pfs_offset + this.pfs_size, Bytes(this.sc_offset - (this.pfs_offset + this.pfs_size))),
+            'unk2_data'       / Pointer(this.pfs_offset + this.pfs_size, Bytes(this.sc_offset - (this.pfs_offset +
+                                                                                                 this.pfs_size))),
         )
         
         self.fih = fih_header.parse(file)
@@ -102,4 +103,3 @@ class FIH:
             print('EXTRACTED #4: %s.unk2 (0x%X Bytes)' % (self.file, len(self.fih.unk2_data)))
         
         print('4 files extracted...')
-    

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import os
 from construct import *
-
 from utils import _create_working_dir
+
 
 class PUP:
     
@@ -41,4 +41,3 @@ class PUP:
         print('PS5 PUP EXTRACTiON')
         print('###################')
         print('SOON (TM)')
-    
