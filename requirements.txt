@@ -1,1 +1,2 @@
 construct==2.10.56
+dnslib~=0.9.14

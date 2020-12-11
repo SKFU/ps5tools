@@ -19,21 +19,16 @@ class PUP:
         
         self.pup = pup_header.parse(file)
     
-    def info_raw(self):
-        
-        print('PS5 PUP iNFO')
-        print('#############')
-        
-        print('Filename: ' + os.path.basename(self.file))
-        print(self.pup)
-    
-    def info(self):
+    def info(self, verbose):
         
         print('PS5 PUP iNFO')
         print('############')
-        
-        print('Filename: ' + os.path.basename(self.file))
-        print('Header not analyzed, yet...')
+
+        if verbose:
+            print(self.pup)
+        else:
+            print('Filename: ' + os.path.basename(self.file))
+            print('Header not analyzed, yet...')
     
     def extract(self):
         

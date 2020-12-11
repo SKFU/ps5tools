@@ -46,32 +46,27 @@ class SLB2:
         
         self.slb2 = slb2_header.parse(file)
     
-    def info_raw(self):
+    def info(self, verbose):
         
         print('PS5 SLB2 iNFO')
         print('#############')
-        
-        print('Filename:   '     + os.path.basename(self.file))
-        print(self.slb2)
-    
-    def info(self):
-        
-        print('PS5 SLB2 iNFO')
-        print('#############')
-        
-        print('Filename:   '     + os.path.basename(self.file))
-        print('Version:    0x%X' % self.slb2.version)
-        print('Type:       '     + self.slb2.type)
-        print('File Count: 0x%X' % self.slb2.file_count)
-        print('Data Size:  0x%X' % self.slb2.data_size)
-        
-        print('Contains:')
-        for i in range(self.slb2.file_count):
-            print('')
-            print('Name:   '     + self.slb2.pup_entries[i].pup_name)
-            print('Offset: 0x%X' % (self.slb2.pup_entries[i].pup_offset * self.block_size))
-            print('Bytes:  0x%X' % self.slb2.pup_entries[i].pup_data_size)
-    
+
+        if verbose:
+            print(self.slb2)
+        else:
+            print('Filename:   '     + os.path.basename(self.file))
+            print('Version:    0x%X' % self.slb2.version)
+            print('Type:       '     + self.slb2.type)
+            print('File Count: 0x%X' % self.slb2.file_count)
+            print('Data Size:  0x%X' % self.slb2.data_size)
+
+            print('Contains:')
+            for i in range(self.slb2.file_count):
+                print('')
+                print('Name:   '     + self.slb2.pup_entries[i].pup_name)
+                print('Offset: 0x%X' % (self.slb2.pup_entries[i].pup_offset * self.block_size))
+                print('Bytes:  0x%X' % self.slb2.pup_entries[i].pup_data_size)
+
     def extract(self):
         
         print('')

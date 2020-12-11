@@ -20,17 +20,17 @@ class CNT:
 
         data_entry = Struct(
             Padding(2),
-            'type'      / Enum(Int8ub,
-                               UNKNOWN=0x00,
-                               TOC=0x01,
+            'file_type'      / Enum(Int8ub,
+                               UNKNOWN1 =0x00,
+                               TOC      =0x01,
                                FILENAMES=0x02,
-                               NOT_TO_BE_EXTRACTED=0x04,
-                               FILE2=0x10,
-                               FILE3=0x12,
-                               FILE4=0x14,
-                               FILE5=0x20,
-                               FILE6=0x21,
-                               FILE7=0x30,
+                               UNKNOWN2 =0x04,
+                               FILETYPE1=0x10,
+                               FILETYPE2=0x12,
+                               FILETYPE3=0x14,
+                               FILETYPE4=0x20,
+                               FILETYPE5=0x21,
+                               FILETYPE6=0x30,
                                ),
             Padding(1),
             'filename_offset'  / Int32ub,
@@ -80,35 +80,31 @@ class CNT:
 
         self.cnt = cnt_header.parse(file)
 
-    def info_raw(self):
-
-        print('PS5 CNT iNFO')
-        print('#############')
-
-        print('Filename: ' + os.path.basename(self.file))
-        print(self.cnt)
-
-    def info(self):
+    def info(self, verbose):
         
         print('PS5 CNT iNFO')
         print('############')
-        print('Filename:   '     + os.path.basename(self.file))
-        print('File Count:   %i' % self.cnt.file_count)
-        print('Data Size:  0x%X' % self.cnt.data_size)
-        print('Title ID:   '     + self.cnt.title_id)
-        print('Contains:')
-        self._get_filenames()
-        print(self.file_names)
+
+        if verbose:
+            print(self.cnt)
+        else:
+            print('Filename:   '     + os.path.basename(self.file))
+            print('File Count:   %i' % self.cnt.file_count)
+            print('Data Size:  0x%X' % self.cnt.data_size)
+            print('Title ID:   '     + self.cnt.title_id)
+            print('Contains:')
+            self._get_filenames()
+            print(self.file_names)
 
     def _get_filenames(self) -> bool:
 
         for i in range(self.cnt.file_count - 1):
-            if self.cnt.data_entries[i].type == 'FILENAMES':
+            if self.cnt.data_entries[i].file_type == 'FILENAMES':
                 file_names = ''.join(chr(x) for x in self.cnt.data[i].data)
                 self.file_names = file_names.replace('\x00', ' ').split()
                 return True
 
-    def extract(self):
+    def extract(self, verbose):
 
         print('')
         print('PS5 CNT EXTRACTiON')
@@ -121,6 +117,10 @@ class CNT:
 
         working_dir = _create_working_dir(str(os.path.basename(self.file)))
 
+        verbose_filetypes = {'UNKNOWN1', 'UNKNOWN2', 'TOC', 'FILENAMES'}
+        if verbose:
+            verbose_filetypes.clear()
+
         for i in range(self.cnt.file_count - 1):
             if j >= self.cnt.file_count - filename_counter - 1 and filenames_available:
                 filename = self.file_names[counter]
@@ -128,16 +128,27 @@ class CNT:
             else:
                 filename = ('%i.' % j) + _get_extension_by_signature(self.cnt.data[i].signature.hex())
 
-            os.makedirs(working_dir + os.path.dirname(filename), exist_ok=True)
+            os.makedirs(working_dir + '/' + os.path.dirname(filename), exist_ok=True)
 
-            with open(working_dir + '/' + filename, 'wb') as f:
-                f.write(self.cnt.data[i].data)
-                print('EXTRACTED #%i: %s (0x%X Bytes)' % (
+            file_type = str(self.cnt.data_entries[i].file_type)
+
+            if file_type not in verbose_filetypes:
+                with open(working_dir + '/' + filename, 'wb') as f:
+                    f.write(self.cnt.data[i].data)
+                    print('EXTRACTED #%i: %s (0x%X Bytes)' % (
+                                i,
+                                filename,
+                                self.cnt.data_entries[i].data_size,
+                                )
+                          )
+            else:
+                print('SKIPPED #%i: %s (0x%X Bytes)' % (
                             i,
                             filename,
                             self.cnt.data_entries[i].data_size,
                             )
                       )
+
             j += 1
 
         print('%i files extracted...' % (self.cnt.file_count - 1))
